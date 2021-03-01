@@ -1,0 +1,49 @@
+import numpy
+
+class Perceptron():
+
+    def __init__(self):
+        numpy.random.seed(1)
+        self.weigth1 = (2 * numpy.random.random((3, 1)) - 1)
+
+    def sig(self, z):
+        return (1 / (1 + numpy.exp(-z)))
+
+    def sig_der(self, z):
+        return (z* (1 - z))
+
+    def training_perceptron(self, inputs, outputs, iterations):
+        for i in range(iterations):
+            output = self.output(inputs)
+            backpropagation = numpy.dot(inputs.T, (outputs - output) * self.sig_der(output))
+            self.weigth1 = backpropagation + self.weigth1
+        print("Value of the weights: ")
+        print(self.weigth1)
+
+    def output(self, inputs):
+        inputs = (inputs.astype(float))
+        output = (self.sig(numpy.dot(inputs, self.weigth1)))
+        return output
+
+
+if __name__ == "__main__":
+    perceptron = Perceptron()
+    inputs = numpy.array([[1, 1, 1],[1, 1, 0],[1, 0, 1],[1, 0, 0]])
+    outputs = numpy.array([[1], [0], [0], [0]])
+    iter = input('Amount of backpropagations: ')
+    iteration = int(iter)
+    perceptron.training_perceptron(inputs, outputs, iteration)
+    print("The perceptron is trained as an AND function. You must give 2 inputs (1 or 0). Only if both cases are True (1), \n"
+          "the perceptron will give 'True' as an answer. ")
+    Inp1 = str(input("Value input 1: "))
+    Inp2 = str(input("Value input 2: "))
+
+    if perceptron.output(numpy.array([1, Inp1, Inp2])) > 0.5:
+        R = True
+        percentage = (perceptron.output(numpy.array([1, Inp1, Inp2])))* 100
+    else:
+        R = False
+        percentage = (1 - perceptron.output(numpy.array([1, Inp1, Inp2])))*100
+
+    print("Output data: ",R)
+    print("With a certainty of {} %".format(percentage))
